@@ -42,17 +42,19 @@
                 <font-awesome-icon
                   :icon="['fas', 'remove']"
                   @click="item.isVisible = !item.isVisible"
+                  id="closeIconMobile"
                 />
               </div>
               <div class="popUp">
                 <font-awesome-icon :icon="['fas', 'calendar']" />
                 Bucket item action 1
               </div>
-              <div id="deleteBucketItem" class="popUp" @click="deleteItem(item.uuid)">
-                <font-awesome-icon
-                  :icon="['fas', 'remove']"
-                  class="deleteBucketItem"
-                />
+              <div
+                id="deleteBucketItem"
+                class="popUp"
+                @click="deleteItem(item.uuid)"
+              >
+                <font-awesome-icon :icon="['fas', 'remove']" id="deleteIcon" />
                 Delete bucket item
               </div>
               <button
@@ -186,6 +188,12 @@ hr {
   border: 1px solid #b5c5d0;
 }
 
+h1,
+h3 {
+  padding-left: 5%;
+  font-weight: medium;
+}
+
 button:hover {
   background: #4a575f;
 }
@@ -249,26 +257,48 @@ hr {
   width: 100%;
 }
 
+#deleteIcon {
+  color: #ff5093;
+}
+.classChange {
+  color: #ff5093;
+}
 /* optimize for mobile deices */
 
 @media only screen and (max-width: 600px) {
   .main {
     width: 100%;
     padding: 0;
+    font-size: 1em;
   }
   .showMore {
-    bottom: 0;
+    margin-bottom: -5px;
     right: 0;
-    width: 100%;
-    height: 40%;
+    bottom: 0;
+    width: 94%;
+    height: 35%;
   }
   .onlyOnMobile {
     display: flex;
     flex-direction: row;
-    margin: 0 auto;
+    position: relative;
+    padding: 15px;
   }
   .onlyOnDesktop {
     display: none;
+  }
+  hr {
+    display: none;
+  }
+  .popUp {
+    padding: 12px;
+    margin-left: 20px;
+  }
+  #closeIconMobile {
+    color: rgba(153, 169, 180, 1);
+    position: absolute;
+    top: 10px;
+    right: 10px;
   }
 }
 </style>
