@@ -1,6 +1,9 @@
 {
   "name": "vello_frontend_task",
   "version": "0.0.0",
+  "engines": {
+    "node": "18.5.0"
+  },
   "scripts": {
     "dev": "vite --port 3000",
     "preview": "vite preview --port 3000",
