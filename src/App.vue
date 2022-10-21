@@ -35,7 +35,7 @@
           <td></td>
           <td>{{ item.do_before }}</td>
           <td class="optionButtonDialog">
-            <div>
+            <div class="showMoreDots">
               <font-awesome-icon
                 :icon="['fas', 'ellipsis']"
                 class="dots"
@@ -78,7 +78,6 @@
       <hr />
     </div>
   </div>
-  {{ bucketList }}
 </template>
 
 <script>
@@ -212,9 +211,12 @@ hr {
 .head {
   font-size: 0.6em;
 }
-.dots:hover {
+.dots:hover,
+.dots:focus,
+.dots:active {
   border-radius: 50%;
-  background-color: rgba(214, 224, 232, 1);
+  background: rgba(214, 224, 232, 1);
+  cursor: pointer;
 }
 .showMore {
   background-color: #ffffff;
@@ -307,6 +309,11 @@ hr {
 /* On mouse-over, add a grey background color */
 .container:hover input ~ .checkmark {
   background: #f5f5f5;
+  border: 1px solid #67889f;
+}
+
+.container:active input ~ .checkmark {
+  background: #ccd7df;
   border: 1px solid #67889f;
 }
 
