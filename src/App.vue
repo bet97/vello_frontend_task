@@ -207,7 +207,7 @@ hr {
   width: 100%;
 }
 
-/* classes */
+/* classes   */
 .head {
   font-size: 0.6em;
 }
