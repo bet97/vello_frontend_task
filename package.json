@@ -14,8 +14,10 @@
     "@fortawesome/vue-fontawesome": "^3.0.0-5",
     "@mdi/font": "^7.0.96",
     "axios": "^1.1.3",
+    "express": "^4.18.2",
     "pinia": "^2.0.21",
     "save": "^2.9.0",
+    "serve-static": "^1.15.0",
     "vue": "^3.2.38",
     "vue-axios": "^3.5.0"
   },
