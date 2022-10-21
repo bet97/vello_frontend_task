@@ -9,7 +9,7 @@
     "preview": "vite preview --port 3000",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore",
     "postinstall": "npm install express",
-    "build": "vue-tsc --noEmit && vite build"
+    "build": "vite build"
   },
   "dependencies": {
     "@fortawesome/fontawesome": "^1.2.0-6",
