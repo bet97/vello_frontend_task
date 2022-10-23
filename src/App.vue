@@ -1,87 +1,95 @@
 <template>
-  <div class="main">
-    <font-awesome-icon :icon="['fas', 'remove']" class="closeIconMobile" />
-    <h1>Bucket list</h1>
-    <table>
-      <thead>
-        <tr>
-          <td class="head">Done</td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td class="head">Do before age</td>
-          <td></td>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="item in bucketList" :key="item.uuid">
-          <td>
-            <label class="container">
-              <input
-                type="checkbox"
-                @click="updateItemCheck(item.uuid, (item.done = !item.done))"
-              />
-              <span class="checkmark"></span>
-            </label>
-          </td>
-          <td>{{ item.description }}</td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td>{{ item.do_before }}</td>
-          <td class="optionButtonDialog">
-            <div class="showMoreDots">
-              <font-awesome-icon
-                :icon="['fas', 'ellipsis']"
-                class="dots"
-                @click="item.isVisible = !item.isVisible"
-              />
-            </div>
-            <div class="showMore" v-if="item.isVisible">
-              <div class="onlyOnMobile">
-                <h3>{{ item.description }}</h3>
-                <font-awesome-icon
-                  :icon="['fas', 'remove']"
-                  @click="item.isVisible = !item.isVisible"
-                  class="closeIconMobile"
-                />
-              </div>
-              <div class="popUp">
-                <font-awesome-icon :icon="['fas', 'calendar']" />
-                Bucket item action 1
-              </div>
-              <div
-                id="deleteBucketItem"
-                class="popUp"
-                @click="deleteItem(item.uuid)"
-              >
-                <font-awesome-icon :icon="['fas', 'remove']" id="deleteIcon" />
-                Delete bucket item
-              </div>
-              <button
-                @click="item.isVisible = !item.isVisible"
-                class="onlyOnDesktop"
-              >
-                Done
-              </button>
-            </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <div>
-      <hr />
+  <div class="wrapper" id="app">
+    <div class="title-block">
+      <div class="title-text">
+        <h1>Bucket list</h1>
+      </div>
+      <div>
+        <img src="src/media/grayxMobile.svg" class="close-icon-mobile" />
+      </div>
+    </div>
+
+    <div class="t-head">
+      <div class="done">Done</div>
+      <div></div>
+      <div class="do-before-age" id="do-before-heading">Do before age</div>
+    </div>
+
+    <div class="main-row" v-for="item in bucketList" :key="item.uuid">
+      <div class="input-cell">
+        <label class="container">
+          <input
+            type="checkbox"
+            v-model="item.done"
+            @click="updateItemCheck(item.uuid, (item.done = !item.done))"
+          />
+          <span class="checkmark"></span>
+        </label>
+      </div>
+      <div class="description" id="description-text">
+        {{ item.description }}
+      </div>
+      <div class="do-before-age" id="do-before-text">{{ item.do_before }}</div>
+      <div
+        class="show-more-dots"
+        v-click-outside="() => close(item.isVisible, item.uuid)"
+      >
+        <font-awesome-icon
+          :icon="['fas', 'ellipsis']"
+          class="dots"
+          @click="item.isVisible = !item.isVisible"
+        />
+        <div class="showMore" v-if="item.isVisible">
+          <div class="onlyOnMobile">
+            <h3>{{ item.description }}</h3>
+            <img
+              src="src/media/grayxMobile.svg"
+              @click="item.isVisible = !item.isVisible"
+              class="close-icon-mobile"
+            />
+          </div>
+          <div class="pop-up">
+            <img src="src/media/calendar.svg" />
+            Bucket item action 1
+          </div>
+          <div
+            id="delete-bucket-item"
+            class="pop-up"
+            @click="deleteItem(item.uuid)"
+          >
+            <img src="src/media/redx.svg" />
+            Delete bucket item
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer-row">
+      <button class="done-button">Done</button>
     </div>
   </div>
+
+  {{ bucketList }}
 </template>
 
 <script>
 import axios from "axios";
+
+const clickOutside = {
+  beforeMount: (el, binding) => {
+    el.clickOutsideEvent = (event) => {
+      // here I check that click was outside the el and his children
+      if (!(el == event.target || el.contains(event.target))) {
+        // and if it did, call method provided in attribute value
+        binding.value();
+      }
+    };
+    document.addEventListener("click", el.clickOutsideEvent);
+  },
+  unmounted: (el) => {
+    document.removeEventListener("click", el.clickOutsideEvent);
+  },
+};
+
 export default {
   data() {
     return {
@@ -90,6 +98,9 @@ export default {
       errored: false,
       isVisible: false,
     };
+  },
+  directives: {
+    clickOutside,
   },
   mounted() {
     this.bucketList = this.fetchData();
@@ -117,7 +128,7 @@ export default {
     updateItemCheck(id, done) {
       axios
         .put(
-          `${import.meta.env.VITE_BASE_UR}item/${id}`,
+          `${import.meta.env.VITE_BASE_URL}item/${id}`,
           {
             done: done,
           },
@@ -136,7 +147,7 @@ export default {
     deleteItem(id) {
       if (confirm("Do you really want to delete this item?")) {
         axios
-          .delete(`${import.meta.env.VITE_BASE_UR}item/${id}`, {
+          .delete(`${import.meta.env.VITE_BASE_URL}item/${id}`, {
             headers: { "api-key": import.meta.env.VITE_APP_API_KEY },
           })
           .then((response) => response)
@@ -145,7 +156,6 @@ export default {
             this.errored = true;
           })
           .finally(() => (this.loading = false));
-
         setTimeout(
           () =>
             (this.bucketList = this.bucketList.filter(
@@ -155,11 +165,9 @@ export default {
         );
       }
     },
-    showItem(id, status) {
-      if (status) {
-        this.$set(this.statusShowItem, id, true);
-      } else {
-        this.statusShowItem[id] = false;
+    close(event, id) {
+      if (event === true) {
+        this.bucketList.find((item) => item.uuid === id).isVisible = !event;
       }
     },
   },
@@ -173,27 +181,17 @@ export default {
   letter-spacing: 0.25px;
   color: #002844;
 }
-/* HTML elements css*/
-td {
-  padding: 10px;
-  font-size: 0.875em;
-  font-style: normal;
-}
+/* HTML elements */
+
 button {
   background: #002844;
   border: #002844;
   color: white;
-  padding: 8px;
+  padding: 10px;
   border-radius: 8px;
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  margin-bottom: -50px;
-  justify-content: center;
-  width: 50%;
-}
-hr {
-  border: 1px solid #b5c5d0;
+  width: 25%;
+  margin-top: 15px;
+  font-weight: 700;
 }
 h1,
 h3 {
@@ -203,14 +201,13 @@ h3 {
 button:hover {
   background: #4a575f;
 }
-hr {
-  width: 100%;
+
+img {
+  padding-right: 15px;
 }
 
 /* classes   */
-.head {
-  font-size: 0.6em;
-}
+
 .dots:hover,
 .dots:focus,
 .dots:active {
@@ -219,31 +216,17 @@ hr {
   cursor: pointer;
 }
 .showMore {
-  background-color: #ffffff;
   box-shadow: 1px 1px 0px rgba(0, 40, 68, 0.09),
     -32.3816px -1.40789px 47.8684px -16.8947px rgba(2, 57, 95, 0.28),
     -64.7632px 59.1316px 30.9737px -49.2763px rgba(2, 57, 95, 0.23);
   border-radius: 16px;
   z-index: 1;
   position: fixed;
+  background-color: #ffffff;
   padding: 12px;
 }
-.main {
-  width: 60%;
-  padding: 33px;
-  margin: 0 auto;
-  background: #ffffff;
-  box-shadow: 1px 1px 0px rgba(0, 40, 68, 0.09),
-    0px 13.59px 47.8684px -26.89px rgba(2, 57, 95, 0.2),
-    0px 24.13px 50.97px -29.28px rgba(2, 57, 95, 0.23);
-  border-radius: 16.8947px;
-  position: relative;
-}
-.moveRight {
-  text-align: right;
-}
 
-.popUp {
+.pop-up {
   padding: 10px;
 }
 
@@ -251,22 +234,26 @@ hr {
   display: none;
 }
 
-.onlyOnDesktop {
+.done-button {
   display: block;
 }
 
-.closeIconMobile {
+.close-icon-mobile {
   color: rgba(153, 169, 180, 1);
   position: absolute;
   top: 15px;
-  right: 15px;
+  right: 0;
 }
 
-#deleteBucketItem {
+#delete-bucket-item {
   color: #ff5093;
 }
-#deleteBucketItem:hover {
+#delete-bucket-item:hover {
   color: #893e5b;
+}
+
+#deleteIcon {
+  color: #ff5093;
 }
 
 /* w3schools checkbox */
@@ -275,8 +262,8 @@ hr {
 .container {
   display: block;
   position: relative;
-  padding-left: 35px;
-  margin-bottom: 12px;
+  padding-left: 20px;
+  margin-bottom: 18px;
   cursor: pointer;
   font-size: 22px;
   -webkit-user-select: none;
@@ -331,7 +318,7 @@ hr {
 }
 
 /* Show the checkmark when checked */
-.container input:checked ~ .checkmark:after {
+input:checked ~ .checkmark:after {
   display: block;
 }
 
@@ -348,14 +335,127 @@ hr {
   transform: rotate(45deg);
 }
 
+/* grid */
+.wrapper {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-auto-rows: minmax(40px, auto);
+  grid-auto-columns: min-content auto;
+  margin: 0 auto;
+  padding: 20px;
+  background: #ffffff;
+  box-shadow: 1px 1px 0px rgba(0, 40, 68, 0.09),
+    0px 13.59px 47.8684px -26.89px rgba(2, 57, 95, 0.2),
+    0px 24.13px 50.97px -29.28px rgba(2, 57, 95, 0.23);
+  border-radius: 16.8947px;
+  position: relative;
+  width: 55%;
+  row-gap: 10px;
+}
+
+.title-block,
+.t-head {
+  grid-column: span 5;
+  display: grid;
+  grid-template-columns: 80px repeat(2, 1fr) 65px;
+}
+
+.t-head,
+.title-text {
+  grid-column: span 5;
+}
+
+.description {
+  grid-column: 2 / 1 span;
+  display: flex;
+  justify-content: left;
+  align-items: center;
+}
+
+.done {
+  grid-column: 1 / span 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: "Open Sans";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 120%;
+  letter-spacing: 0.25px;
+  color: #002844;
+}
+
+.do-before-age {
+  display: flex;
+  justify-content: right;
+  align-items: center;
+  grid-column: 3 / span 1;
+}
+
+#do-before-heading {
+  font-family: "Open Sans";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 120%;
+  text-align: right;
+  letter-spacing: 0.25px;
+  color: #002844;
+}
+
+#do-before-text {
+  font-family: "Roboto Mono";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 0.95em;
+  line-height: 120%;
+  letter-spacing: 0.5px;
+  color: #002844;
+}
+
+#description-text {
+  font-family: "Open Sans";
+  font-style: normal;
+  line-height: 120%;
+  letter-spacing: 0.25px;
+  font-size: 0.875em;
+  color: #002844;
+}
+
+.main-row {
+  grid-column: span 4;
+  display: grid;
+  grid-template-columns: 80px 1fr 20% 60px;
+}
+
+.show-more-dots,
+.input-cell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.footer-row {
+  grid-column: span 5;
+  grid-column: 1 / 5 span;
+  display: flex;
+  justify-content: right;
+  align-items: right;
+  border-top: 1px solid #b5c5d0;
+}
+
 /* optimize for mobile devices */
 
 @media only screen and (max-width: 600px) {
-  .main {
+  .wrapper {
     width: 100%;
     padding: 0;
     font-size: 1em;
-    overflow: hidden;
+    row-gap: 0.875rem;
+    line-height: 21x;
+    background: #ffffff;
+    box-shadow: none;
   }
   .showMore {
     margin-bottom: -5px;
@@ -363,6 +463,10 @@ hr {
     bottom: 0;
     width: 94%;
     height: 35%;
+    background: #ffffff;
+    box-shadow: 0px -1px 5px -2px rgba(0, 40, 68, 0.1),
+      0px -30px 51px -15px rgba(2, 57, 95, 0.15);
+    border-radius: 32px 32px 0px 0px;
   }
   .onlyOnMobile {
     display: flex;
@@ -370,15 +474,26 @@ hr {
     position: relative;
     padding: 15px;
   }
-  .onlyOnDesktop {
-    display: none;
-  }
-  hr {
-    display: none;
-  }
-  .popUp {
+  .pop-up {
     padding: 12px;
     margin-left: 20px;
+  }
+  .container {
+    margin-bottom: 22px;
+  }
+  .footer-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .done-button {
+    margin-top: 10%;
+    width: 35%;
+    padding: 14px;
+  }
+  .close-icon-mobile {
+    top: 15px;
+    right: 0;
   }
 }
 </style>
