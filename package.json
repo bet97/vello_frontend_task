@@ -24,10 +24,8 @@
     "pinia": "^2.0.21",
     "save": "^2.9.0",
     "serve-static": "^1.15.0",
-    "v-click-outside": "^3.2.0",
     "vue": "^3.2.38",
-    "vue-axios": "^3.5.0",
-    "vue-click-outside-element": "^3.0.0"
+    "vue-axios": "^3.5.0"
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.1.4",

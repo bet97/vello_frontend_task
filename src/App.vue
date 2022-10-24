@@ -1,11 +1,11 @@
 <template>
   <div class="wrapper" id="app">
     <div class="title-block">
+      <div id="cross-position">
+        <img src="src/media/grayxMobile.svg" class="close-icon-mobile" />
+      </div>
       <div class="title-text">
         <h1>Bucket list</h1>
-      </div>
-      <div>
-        <img src="src/media/grayxMobile.svg" class="close-icon-mobile" />
       </div>
     </div>
 
@@ -39,26 +39,28 @@
           class="dots"
           @click="item.isVisible = !item.isVisible"
         />
-        <div class="showMore" v-if="item.isVisible">
-          <div class="onlyOnMobile">
-            <h3>{{ item.description }}</h3>
-            <img
-              src="src/media/grayxMobile.svg"
-              @click="item.isVisible = !item.isVisible"
-              class="close-icon-mobile"
-            />
-          </div>
-          <div class="pop-up">
-            <img src="src/media/calendar.svg" />
-            Bucket item action 1
-          </div>
-          <div
-            id="delete-bucket-item"
-            class="pop-up"
-            @click="deleteItem(item.uuid)"
-          >
-            <img src="src/media/redx.svg" />
-            Delete bucket item
+        <div id="dots-position">
+          <div class="show-more" v-if="item.isVisible">
+            <div class="only-on-mobile">
+              <h3>{{ item.description }}</h3>
+              <img
+                src="src/media/grayxMobile.svg"
+                @click="item.isVisible = !item.isVisible"
+                class="close-icon-mobile"
+              />
+            </div>
+            <div class="pop-up">
+              <img src="src/media/calendar.svg" />
+              Bucket item action 1
+            </div>
+            <div
+              id="delete-bucket-item"
+              class="pop-up"
+              @click="deleteItem(item.uuid)"
+            >
+              <img src="src/media/redx.svg" id="delete-item-cross" />
+              Delete bucket item
+            </div>
           </div>
         </div>
       </div>
@@ -67,8 +69,6 @@
       <button class="done-button">Done</button>
     </div>
   </div>
-
-  {{ bucketList }}
 </template>
 
 <script>
@@ -77,9 +77,7 @@ import axios from "axios";
 const clickOutside = {
   beforeMount: (el, binding) => {
     el.clickOutsideEvent = (event) => {
-      // here I check that click was outside the el and his children
       if (!(el == event.target || el.contains(event.target))) {
-        // and if it did, call method provided in attribute value
         binding.value();
       }
     };
@@ -215,32 +213,39 @@ img {
   background: rgba(214, 224, 232, 1);
   cursor: pointer;
 }
-.showMore {
+.show-more {
   box-shadow: 1px 1px 0px rgba(0, 40, 68, 0.09),
     -32.3816px -1.40789px 47.8684px -16.8947px rgba(2, 57, 95, 0.28),
     -64.7632px 59.1316px 30.9737px -49.2763px rgba(2, 57, 95, 0.23);
   border-radius: 16px;
   z-index: 1;
-  position: fixed;
   background-color: #ffffff;
   padding: 12px;
+  position: fixed;
+}
+
+#dots-position {
+  position: relative;
 }
 
 .pop-up {
   padding: 10px;
+  display: flex;
+  flex-direction: row;
 }
 
-.onlyOnMobile {
+.only-on-mobile {
   display: none;
 }
 
 .done-button {
   display: block;
+  margin-top: 2%;
+  width: 15%;
 }
 
 .close-icon-mobile {
   color: rgba(153, 169, 180, 1);
-  position: absolute;
   top: 15px;
   right: 0;
 }
@@ -248,12 +253,13 @@ img {
 #delete-bucket-item {
   color: #ff5093;
 }
-#delete-bucket-item:hover {
+#delete-bucket-item:hover,
+#delete-item-cross:hover {
   color: #893e5b;
 }
 
-#deleteIcon {
-  color: #ff5093;
+#cross-position {
+  text-align: right;
 }
 
 /* w3schools checkbox */
@@ -348,21 +354,27 @@ input:checked ~ .checkmark:after {
     0px 13.59px 47.8684px -26.89px rgba(2, 57, 95, 0.2),
     0px 24.13px 50.97px -29.28px rgba(2, 57, 95, 0.23);
   border-radius: 16.8947px;
-  position: relative;
   width: 55%;
   row-gap: 10px;
 }
 
-.title-block,
-.t-head {
+.t-head,
+.title-block {
   grid-column: span 5;
   display: grid;
   grid-template-columns: 80px repeat(2, 1fr) 65px;
 }
 
-.t-head,
-.title-text {
+.t-head {
   grid-column: span 5;
+}
+
+.title-text {
+  grid-column: 1 / span 3;
+}
+
+#cross-position {
+  grid-column: 3 / span 3;
 }
 
 .description {
@@ -435,7 +447,6 @@ input:checked ~ .checkmark:after {
   justify-content: center;
   align-items: center;
 }
-
 .footer-row {
   grid-column: span 5;
   grid-column: 1 / 5 span;
@@ -457,7 +468,7 @@ input:checked ~ .checkmark:after {
     background: #ffffff;
     box-shadow: none;
   }
-  .showMore {
+  .show-more {
     margin-bottom: -5px;
     right: 0;
     bottom: 0;
@@ -467,8 +478,9 @@ input:checked ~ .checkmark:after {
     box-shadow: 0px -1px 5px -2px rgba(0, 40, 68, 0.1),
       0px -30px 51px -15px rgba(2, 57, 95, 0.15);
     border-radius: 32px 32px 0px 0px;
+    z-index: 1;
   }
-  .onlyOnMobile {
+  .only-on-mobile {
     display: flex;
     flex-direction: row;
     position: relative;
@@ -494,6 +506,7 @@ input:checked ~ .checkmark:after {
   .close-icon-mobile {
     top: 15px;
     right: 0;
+    position: absolute;
   }
 }
 </style>
