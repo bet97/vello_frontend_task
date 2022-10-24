@@ -47,17 +47,22 @@
                 class="close-icon-mobile"
               />
             </div>
-            <div class="pop-up">
-              <img src="src/media/calendar.svg" />
-              Bucket item action 1
-            </div>
-            <div
-              id="delete-bucket-item"
-              class="pop-up"
-              @click="deleteItem(item.uuid)"
-            >
-              <img src="src/media/redx.svg" id="delete-item-cross" />
-              Delete bucket item
+            <div class="pop-up-grid">
+              <div class="pop-up">
+                <div class="icon-pop-up">
+                  <img src="src/media/calendar.svg" />
+                </div>
+                <div class="icon-pop-up2">Bucket item action 1</div>
+              </div>
+              <div
+                class="pop-up"
+                @click="deleteItem(item.uuid)"
+              >
+                <div class="icon-pop-up">
+                  <img src="src/media/redx.svg" />
+                </div>
+                <div id="delete-bucket-item" class="icon-pop-up2">Delete bucket item</div>
+              </div>
             </div>
           </div>
         </div>
@@ -190,7 +195,7 @@ h3 {
 }
 
 img {
-  padding-right: 15px;
+  padding-right: 10px;
 }
 
 /* classes   */
@@ -215,7 +220,7 @@ img {
   align-items: center;
 }
 
-#dots-posiion {
+#dots-position {
   position: relative;
 }
 
@@ -228,12 +233,6 @@ img {
   background-color: #ffffff;
   padding: 12px;
   position: fixed;
-}
-
-.pop-up {
-  padding: 10px;
-  display: flex;
-  flex-direction: row;
 }
 
 .only-on-mobile {
@@ -468,6 +467,34 @@ input:checked ~ .checkmark:after {
   justify-content: right;
   align-items: right;
   border-top: 1px solid #b5c5d0;
+}
+
+.pop-up-grid {
+  grid-column: 2 span;
+  grid-template-columns: repeat(2, 1fr);
+  display: grid;
+  grid-auto-rows: minmax(40px, auto);
+}
+
+.pop-up {
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  grid-column: 2 span;
+}
+
+.icon-pop-up {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  grid-column: 1 span;
+}
+
+.icon-pop-up2 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  grid-column: 2 span;
 }
 
 /* optimize for mobile devices */
