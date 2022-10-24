@@ -34,11 +34,9 @@
         class="show-more-dots"
         v-click-outside="() => close(item.isVisible, item.uuid)"
       >
-        <font-awesome-icon
-          :icon="['fas', 'ellipsis']"
-          class="dots"
-          @click="item.isVisible = !item.isVisible"
-        />
+        <button class="circle" @click="item.isVisible = !item.isVisible">
+          <font-awesome-icon :icon="['fas', 'ellipsis']" class="dots" />
+        </button>
         <div id="dots-position">
           <div class="show-more" v-if="item.isVisible">
             <div class="only-on-mobile">
@@ -180,24 +178,15 @@ export default {
   color: #002844;
 }
 /* HTML elements */
-
 button {
-  background: #002844;
-  border: #002844;
-  color: white;
-  padding: 10px;
-  border-radius: 8px;
-  width: 25%;
-  margin-top: 15px;
-  font-weight: 700;
+  background: transparent;
+  border: none;
+  color: transparent;
 }
 h1,
 h3 {
   padding-left: 5%;
   font-weight: medium;
-}
-button:hover {
-  background: #4a575f;
 }
 
 img {
@@ -206,13 +195,30 @@ img {
 
 /* classes   */
 
-.dots:hover,
-.dots:focus,
-.dots:active {
+.dots {
+  cursor: pointer;
+  z-index: 1;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+}
+
+.circle:hover,
+.circle:active,
+.circle:focus {
   border-radius: 50%;
   background: rgba(214, 224, 232, 1);
-  cursor: pointer;
+  width: 25px;
+  height: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
+
+#dots-posiion {
+  position: relative;
+}
+
 .show-more {
   box-shadow: 1px 1px 0px rgba(0, 40, 68, 0.09),
     -32.3816px -1.40789px 47.8684px -16.8947px rgba(2, 57, 95, 0.28),
@@ -222,10 +228,6 @@ img {
   background-color: #ffffff;
   padding: 12px;
   position: fixed;
-}
-
-#dots-position {
-  position: relative;
 }
 
 .pop-up {
@@ -242,6 +244,18 @@ img {
   display: block;
   margin-top: 2%;
   width: 15%;
+  background: #002844;
+  border: #002844;
+  color: white;
+  padding: 10px;
+  border-radius: 8px;
+  width: 18%;
+  margin-top: 15px;
+  font-weight: 700;
+}
+
+.done-button:hover {
+  background: #4a575f;
 }
 
 .close-icon-mobile {
